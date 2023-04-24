@@ -41,6 +41,7 @@ const Donutchart = () => {
   return (
     <React.Fragment>
         <div>
+            
         <Chart
         type="donut"
         width={320}
