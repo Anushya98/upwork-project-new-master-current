@@ -1,0 +1,118 @@
+ .addform {
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 890px;
+    height: 2300px;
+    padding: 40px;
+    margin-top: 3%;
+    /* margin-left: 32.5%; */
+    background: #1c1c1c;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .addform::before {
+  content:'';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 890px;
+  height: 2300px;
+  background: linear-gradient(0deg,transparent,#45f3ff,#45f3ff);
+  transform-origin: bottom right;
+  animation: animate 6s linear infinite;
+  }
+  .addform::after {
+  content:'';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 890px;
+  height: 2300px;
+  background: linear-gradient(0deg,transparent,#45f3ff,#45f3ff);
+  transform-origin: bottom right;
+  animation: animate 6s linear infinite;
+  animation-delay: -3s;
+  }
+  @keyframes animate{
+  0%
+  {
+  transform: rotate(0deg);
+  }
+  100%
+  {
+  transform: rotate(360deg);
+  }
+  }
+  .in-box{
+  position: absolute;
+  inset: 2px;
+  border-radius: 20px;
+  background: #28292d;
+  z-index: 10;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  }
+  
+  .in-box h2 {
+    margin: 0 0 30px;
+    padding: 0;
+    color: #fff;
+    font-size: 30px;
+    text-align: center;
+  }
+  
+  .in-box .adduser-box{
+    position: relative;
+  }
+  .in-box .adduser-box .input{
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+  }
+  .in-box .adduser-box label{
+    position: absolute;
+    top:0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    pointer-events: none;
+    transition: .5s;
+  }
+  
+  .in-box .adduser-box input:focus ~ label,
+  .in-box .adduser-box input:valid ~ label{
+    top: -20px;
+    left: 0;
+    color: #03e9f4;
+    font-size: 16px;
+  }
+ .addform .btn {
+    background-color: #45f3ff;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+    text-align: center;
+    color: #1c1c1c;
+    font-size: 14px;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    text-transform: uppercase;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    width: 100%;
+        }
+   .addform .btn:hover {
+            opacity: 0.8;
+        }  

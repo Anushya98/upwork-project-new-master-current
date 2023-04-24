@@ -1,0 +1,9 @@
+.headers{
+   margin-left: 20px;
+   margin-right: 20px;
+   background-color: #fff;
+   
+}
+.form-check-input[type=checkbox]{
+   margin-top: 1.3rem;
+}

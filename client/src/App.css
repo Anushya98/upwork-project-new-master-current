@@ -1,0 +1,30 @@
+.app {
+  background-color: #f3f5f7;
+}
+
+.content {
+  width: 100%;
+  /* padding: calc(70px + 12px) 24px 60px 24px; */
+  padding: 25px ;
+}
+.topbar {
+  /* position: fixed; */
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1002;
+  background-color: #293e92;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.075);
+  display: flex;
+  color: #f3f5f7;
+  font-size: 1%;
+
+}
+.sidebar {
+  display: flex;
+  /* z-index: 1001; */
+  /* top: 70px; */
+  border-radius: 25px;
+  box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03);
+
+}
