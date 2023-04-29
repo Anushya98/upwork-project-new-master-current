@@ -7,3 +7,49 @@
 .form-check-input[type=checkbox]{
    margin-top: 1.3rem;
 }
+
+.cards {
+   width: auto;
+   padding: 15px;
+}
+.task{
+  display:grid;
+  grid-template-columns:30% auto;
+    
+}
+.project{
+   display: grid;
+   grid-template-columns: 60% auto;
+}
+@media (max-width: 1200px){
+   .cards {
+      display: flex;
+      flex-direction: column;
+      row-gap: 1rem;
+      width: 100%;
+      
+   }
+   }
+
+   @media (max-width: 1200px){
+      .chart {
+        width: 100%;
+      }
+      }
+
+      @media (max-width:1200px){
+         .task {
+         display: grid;
+         grid-template-columns:100%;
+         row-gap: 1rem;
+         }
+         }
+
+         @media (max-width:1200px){
+            .project {
+            display: grid;
+            grid-template-columns:100%;
+            row-gap: 1rem;
+            }
+            }
+   

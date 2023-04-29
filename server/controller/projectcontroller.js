@@ -55,34 +55,148 @@ const addProject = async (req, res, next) => {
 };
 
 const getAllProjects = async (req, res) => {
-  let inProgressProjects, projects, count, countU, countD, countC;
+  let result, activeResult, inProgressProjects, projects, completed, canceled, count, onGoing, overDue, countU, countD, countC;
   let { state } = req.query;
   var userId = mongoose.mongo.ObjectId(req.user.id);
 
-  const project = await Project.find();
-  try {
-// result = await
-// Project.aggregate([
-// {
-// $match: { state: 'Completed'}
-// },
-// {
-// $group: {
-// _id: {$month: '$lastUpdatedOn'},
-// count: { $sum: 1 }
-// }
-// }
-// ]);
-// console.log(result);
+  const startOfCurrentMonth = new Date();
+  startOfCurrentMonth.setDate(1);
+  const startOfNextMonth = new Date();
+  startOfNextMonth.setDate(1);
+  startOfNextMonth.setMonth(startOfNextMonth.getMonth() + 1);
+
+
+  const project = Project;
+try {
+result = await
+project.aggregate([
+{
+$match: { state: 'Completed'}
+},
+{
+$group: {
+_id: {$month: '$lastUpdatedOn'},
+count: { $sum: 1 }
+}
+}
+]);
+//console.log(result);
+activeResult = await
+project.aggregate([
+{
+$match: { state: 'InProgress'}
+},
+{
+$group: {
+_id: {$month: '$createdAt'},
+count: { $sum: 1 }
+}
+}
+]);
+//console.log(activeResult);
+projects = await Project.find();
+completed = await project.aggregate([
+  {
+    $match: {
+      lastUpdatedOn: {
+        $gte: startOfCurrentMonth,
+        $lte: startOfNextMonth
+      },
+      state: 'Completed'
+    }
+  },
+  {
+    $group: {
+      // _id: {$month: '$createdAt'},
+      _id: null,
+      count: { $sum: 1 }
+    }
+  }
+]).exec();
+if (completed.length === 0) {
+  completed = [{ _id: null, count: 0 }];
+}
+//console.log(`Number of Completed Projects ${JSON.stringify(completed)}`);
+onGoing = await project.aggregate([
+  {
+    $match: {
+      createdAt: {
+        $gte: startOfCurrentMonth,
+        $lte: startOfNextMonth
+      },
+      state: 'InProgress'
+    }
+  },
+  {
+    $group: {
+      // _id: {$month: '$createdAt'},
+      _id: null,
+      count: { $sum: 1 }
+    }
+  }
+]).exec();
+if (onGoing.length === 0) {
+  onGoing = [{ _id: null, count: 0 }];
+}
+//console.log(`Number of Ongoing Projects ${JSON.stringify(onGoing)}`);
+overDue = await project.aggregate([
+  {
+    $match: {
+      dueDate2: {
+        $gte: startOfCurrentMonth,
+        $lte: startOfNextMonth
+      },
+      state: 'Overdue'
+    }
+  },
+  {
+    $group: {
+      // _id: {$month: '$createdAt'},
+      _id: null,
+      count: { $sum: 1 }
+    }
+  }
+]).exec();
+if (overDue.length === 0) {
+  overDue = [{ _id: null, count: 0 }];
+}
+//console.log(`Number of Overdue Projects ${JSON.stringify(overDue)}`);
+
+// console.log(startOfCurrentMonth);
+// console.log(startOfNextMonth);
+canceled = await project.aggregate([
+  {
+    $match: {
+      lastUpdatedOn: {
+        $gte: startOfCurrentMonth,
+        $lte: startOfNextMonth
+      },
+      state: 'Canceled' 
+    }
+  },
+  {
+    $group: {
+      // _id: {$month: '$createdAt'},
+      _id: null,
+      count: { $sum: 1 }
+    }
+  }
+]).exec();
+if (canceled.length === 0) {
+  canceled = [{ _id: null, count: 0 }];
+}
+//console.log(`Number of Canceled Projects ${JSON.stringify(canceled)}`);
+// console.log(startOfCurrentMonth);
+// console.log(startOfNextMonth);
     inProgressProjects = await Project.find({ state: 'InProgress' });
     //console.log(inProgressProjects);
-    count = await Project.countDocuments({ state: 'Completed' });
-    //console.log(`Number of Project Completed: ${count}`);
-    countU = await Project.countDocuments({ state: 'InProgress' });
+    //count = await Project.countDocuments({ state: 'Completed' });
+    // console.log(`Number of Project Completed: ${count}`);
+    //countU = await Project.countDocuments({ state: 'InProgress' });
     //console.log(`Number of Active Project : ${countU}`);
-    countD = await Project.countDocuments({ state: 'Overdue' });
+    //countD = await Project.countDocuments({ state: 'Overdue' });
     //console.log(`Number of Project OverDue : ${countD}`);
-    countC = await Project.countDocuments({ state: 'Canceled' });
+    //countC = await Project.countDocuments({ state: 'Canceled' });
     //console.log(`Number of Project Canceled : ${countC}`);
     if (req.user.role == "user") {
       if (state === "Self") {
@@ -170,13 +284,18 @@ const getAllProjects = async (req, res) => {
   
   return res.status(200)
   .json({
-     //countByMonth : result,
+     countByMonth : result,
+     countByActive : activeResult,
      inProgressProjects, 
      projects, 
-     completedProject : count, 
-     totalProject : countU, 
-     projectOverdue : countD,
-     canceledProject : countC, 
+     //completed : count,
+     completedProjects : completed,
+     onGoingProjects: onGoing,
+     overdueProjects: overDue,
+     canceledProjects: canceled,
+     //totalProject : countU, 
+     //projectOverdue : countD,
+     //canceledProject : countC, 
     });
 };
 

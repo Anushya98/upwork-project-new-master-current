@@ -3,7 +3,7 @@ import LineChart from './line-chart.js'
 
 function Chart() {
   return (
-    <div style={{marginTop:"30px"}}>
+    <div className='chart' style={{marginTop:"30px"}}>
          <div class="row" style={{paddingLeft:"15px", paddingRight:"15px"}}> 
            <div class="col-xl-12">
                 <div class="card bg-white">

@@ -29,13 +29,54 @@ const addUser = async (req, res, next) => {
   return res.status(200).json({ users });
 };
 const getAllUsers = async (req, res) => {
-  let users, countD, countU;
-  //const { role } = req.query;
+  let users, userCount, countD, countU;
+
+// const currentDate = new Date();
+// const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+// startOfMonth.setUTCHours(0, 0, 0, 0);
+// const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+// endOfMonth.setUTCHours(23, 59, 59, 999);
+
+const startOfCurrentMonth = new Date();
+startOfCurrentMonth.setDate(1);
+const startOfNextMonth = new Date();
+startOfNextMonth.setDate(1);
+startOfNextMonth.setMonth(startOfNextMonth.getMonth() + 1);
+
+const user = await User.find();
   try {
+    countD = await User.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startOfCurrentMonth,
+            $lte: startOfNextMonth
+          },
+          role: 'designers'
+        }
+      },
+      {
+        $group: {
+          // _id: {$month: '$createdAt'},
+          _id: null,
+          count: { $sum: 1 }
+        }
+      }
+    ]).exec();
+    // console.log('Number of designers', countD);
+    // console.log(startOfCurrentMonth);
+    // console.log(startOfNextMonth);
+    userCount = await User.countDocuments({
+      createdAt: {
+        $gte: startOfCurrentMonth,
+        $lt: startOfNextMonth
+      }
+    });
+    // console.log('Total of users', userCount);
+    // console.log(startOfCurrentMonth);
+    // console.log(startOfNextMonth);
     users = await User.find();
     //console.log(users)
-    countD = await User.countDocuments({ role: 'designers' });
-    //console.log(`Number of users with "designers" role: ${countD}`);
     countU = await User.countDocuments();
     //console.log(`Number of users : ${countU}`);
   } catch (err) {
@@ -44,7 +85,7 @@ const getAllUsers = async (req, res) => {
   if (!users) {
     return res.status(404).json({ message: "No Users found" });
   }
-  return res.status(200).json({ users, designersCount: countD, newCount : countU });
+  return res.status(200).json({ users, designersCount: countD, newCount : userCount});
 };
 
 const getById = async (req, res) => {

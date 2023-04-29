@@ -25,20 +25,28 @@ function App() {
   const [isSidebar, setIsSidebar] = useState(true);
   return (
     <div className="app">
-      <div className="topbar">
-        <Topbar setIsSidebar={setIsSidebar} />
-      </div>
+     
       <div
         style={{
           display: "flex",
-          marginTop: "1%",
-          marginLeft: "1%",
+          flexWrap:"wrap",
+          flex:"1 1 50%"
         }}
       >
+      <div>
         <div className="sidebar">
           <Sidebar isSidebar={isSidebar} />
         </div>
-        <main className="content">
+           </div>
+        <div>
+        <main className="main">
+           <div className="topbar">
+          <div class="layout-width">
+          <Topbar />
+          </div>
+          </div>
+          <div>
+          <div className="content" >
           <Routes>
             {/* <Route path="/" element={<Dashboard />} /> */}
             <Route path="/" element={<TopTotal />} />
@@ -58,7 +66,10 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/password/forgot" element={<ForgotPassword />} />
           </Routes>
+          </div>
+          </div>
         </main>
+        </div>
       </div>
     </div>
   );

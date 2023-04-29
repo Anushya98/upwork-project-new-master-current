@@ -1,0 +1,36 @@
+.pagination {
+    list-style: none;
+    height: 31.5px;
+    /* width: 31.5px; */
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin-top: 2px;
+    cursor: pointer;
+  }
+  .page-active {
+    background-color: #6c757d;
+    border-radius: 50%;
+  }
+  .page-item {
+    list-style: none;
+    padding: 2px 12px;
+    height: 31.5px;
+    width: 31.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2px;
+  }
+  tbody tr {
+    width: 100% !important;
+  }
+  tbody tr td {
+    text-align: center;
+  }
+  thead th {
+    text-align: center;
+  }
+  .form-check-input {
+    vertical-align: middle !important;
+  }

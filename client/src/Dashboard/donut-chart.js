@@ -13,7 +13,7 @@ const config = {
     },
   };
 
-const DonutCharts = () => {
+const Charts = () => {
     const [chartData, setChartData] = useState([])
     const [chartData1, setChartData1] = useState([])
     const [chartData2, setChartData2] = useState([])
@@ -170,4 +170,4 @@ const DonutCharts = () => {
       );
 }
 
-export default DonutCharts;
+export default Charts;

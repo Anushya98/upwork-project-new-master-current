@@ -3,9 +3,11 @@ import axios from "axios";
 import {Typography } from "@mui/material";
 import CountUp from "react-countup";
 import { format } from  "date-fns";
-import DonutCharts from "./donut-chart.js"
-import Donutchart from "./DonutChart.js";
-
+import Charts from "./donut-chart.js";
+import ReactPaginate from 'react-paginate';
+import { AiFillLeftCircle, AiFillRightCircle } from "react-icons/ai"; 
+import { IconContext } from "react-icons";
+import "./pagination.css";
 
 const token = localStorage.getItem("token");
 
@@ -24,8 +26,8 @@ const config = {
         method: "GET",
       }
     );
-    console.log({allProject})
-    const project = allProject.data.totalProject;
+    //console.log({allProject})
+    const project = allProject.data.onGoingProjects[0].count;
 
   return project;
   }
@@ -38,8 +40,8 @@ const config = {
         method: "GET",
       }
     );
-    console.log({projects})
-    const project = projects.data.completedProject;
+    //console.log({projects})
+    const project = projects.data.completedProjects[0].count;
 
   return project;
   }
@@ -52,8 +54,8 @@ const config = {
         method: "GET",
       }
     );
-    console.log({projects})
-    const project = projects.data.projectOverdue;
+    //console.log({projects})
+    const project = projects.data.overdueProjects[0].count;
 
   return project;
   }
@@ -66,7 +68,7 @@ const config = {
         method: "GET",
       }
     );
-    console.log({projects})
+    //console.log({projects})
     const project = projects.data.inProgressProjects;
 
   return project;
@@ -90,6 +92,18 @@ const ProjectDetails = () => {
     const [countAll, setCountAll] = useState();
     const [overdueCount, setOverdueCount] = useState();
     const [projectLists, setProjectLists] = useState();
+    const [currentPage, setCurrentPage] = useState(0);
+
+   // console.log("all states", {projectCount, currentUser, countAll, overdueCount, projectLists, currentPage})
+
+    const projectsPerPage = 5;
+
+    let displayedProjects = [];
+    let pageCount = 0;
+    if (projectLists) {
+      pageCount = Math.ceil(projectLists.length / projectsPerPage);
+      displayedProjects = projectLists.slice(currentPage * projectsPerPage, (currentPage + 1) * projectsPerPage);
+    }
     
      useEffect(() => {
         allProjects().then((projects) => setCountAll(projects));
@@ -102,20 +116,21 @@ const ProjectDetails = () => {
         //   setCurrentUser(currentUser);
         // });
     }, []);
-      console.log({projectCount});
+     // console.log({projectCount});
       useEffect(() => {
         overdueProjects().then((projects) => setOverdueCount(projects));
     }, []);
-      console.log({overdueCount})
+      //console.log({overdueCount})
       useEffect(() => {
         projectList().then((projects) => setProjectLists(projects));
     }, []);
-      console.log({projectLists})
+     console.log({projectLists})
+
    return (
     <div>
       <div class="container-fluid p-0" style={{ marginTop:"30px" }}>
           
-          <div class="row">
+          <div class="row" style={{position:"relative"}}>
            <div class="col-12">
              <div class="page-title-box d-sm-flex align-items-center justify-content-between">
           
@@ -126,8 +141,9 @@ const ProjectDetails = () => {
            </div>
 
            <div>
-        <div style={{
-             display:"flex"
+        <div className="cards" style={{
+             display:"flex", flexWrap:"wrap"
+            
            }}>
            
              <div class="col-xl-4">
@@ -211,9 +227,10 @@ const ProjectDetails = () => {
                {/* <!-- end col --> */}
        
                </div>
-               <div style={{display:"flex" , justifyContent:"space-between"}}>
+               <div >
+               <div className="project">
                 <div>
-               <div class= "col-xl-12" style={{ marginTop:"50px" ,width:"42rem"}}>
+               <div   class= "col-xl-12" style={{ marginTop:"50px" }}>
                
                             <div class="card card-height-100">
                                 <div class="card-header d-flex align-items-center">
@@ -247,6 +264,29 @@ const ProjectDetails = () => {
                                                                                        </tbody>
 
                                                     </table> 
+
+                                                    <ReactPaginate
+   previousLabel={
+    <IconContext.Provider value={{ color: "#B8C1CC", size: "36px" }}>
+      <AiFillLeftCircle />
+    </IconContext.Provider>
+  }
+  nextLabel={
+    <IconContext.Provider value={{ color: "#B8C1CC", size: "36px" }}>
+      <AiFillRightCircle />
+    </IconContext.Provider>
+  }
+    breakLabel={'...'}
+    breakClassName={'break-me'}
+    pageCount={pageCount}
+    marginPagesDisplayed={2}
+    pageRangeDisplayed={5}
+    onPageChange={({ selected }) =>
+    setCurrentPage(selected)}
+    containerClassName={"pagination"}
+    pageClassName={"page-item"}
+    activeClassName={"page-active"}
+  /> 
                                                </div>
                                            </div>
                                        </div>
@@ -254,11 +294,12 @@ const ProjectDetails = () => {
                              </div> 
                              
                             </div>
-                            <div>
-                                    <DonutCharts />
+                            <div classsname="project">
+                                    <Charts  />
                                                  </div> 
                                                 
                                                  </div>
+                                   </div>
                                    </div>
 
                                   

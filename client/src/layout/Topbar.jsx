@@ -14,7 +14,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { logout } from "../actions/userActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import 'bootstrap/dist/css/bootstrap.css';
+import { Navigate } from "react-router-dom";
+//import 'bootstrap/dist/css/bootstrap.css';
 //import { setMode } from "state";
 
 const token = localStorage.getItem("token");
@@ -45,6 +46,8 @@ const Topbar = () => {
   const logoutHandler = () => {
     dispatch(logout());
     window.location.reload();
+    // return <Navigate to={'/login'} />
+
   };
 
   useEffect(() => {
@@ -73,7 +76,7 @@ const Topbar = () => {
         backgroundColor={colors.primary[400]}
         borderRadius="3px"
       >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
+        <InputBase sx={{ ml: 2}} placeholder="Search" />
         <IconButton type="button" sx={{ p: 1 }}>
           <SearchIcon />
         </IconButton>
@@ -101,6 +104,8 @@ const Topbar = () => {
         <IconButton>
           <PersonOutlinedIcon style={{ color: 'white'}}/>
         </IconButton> */}
+        <div style={{display:"flex"}} className="user">
+        <div>
         <IconButton
           to="/adduser"
           className="topbar-btn"
@@ -113,6 +118,9 @@ const Topbar = () => {
         >
           Add User
         </IconButton>
+        </div>
+
+        <div className="logs">
 
         {!currentUser ? (
           <IconButton
@@ -129,9 +137,9 @@ const Topbar = () => {
         ) : (
           !loading && (
             <IconButton
-              to="/"
+              to="/login"
               onClick={logoutHandler}
-              className="d-none d-xl-inline-block ms-1 fw-medium user-name-text"
+              // className="d-none d-xl-inline-block ms-1 fw-medium user-name-text"
               LinkComponent={Link}
               style={{ 
                 color: "white", 
@@ -140,8 +148,11 @@ const Topbar = () => {
             >
               Logout
             </IconButton>
+           
           )
         )}
+         </div>
+         </div>
       </Box>
     </Box>
   );

@@ -51,18 +51,93 @@ const addTask = async (req, res, next) => {
 };
 
 const getAllTasks = async (req, res) => {
-  let tasks, count, countU, countD;
+  let tasks, completed, onGoing, overDue, count, countU, countD;
   const userRole = req.user.role;
   const userId = req.user._id;
   const { state } = req.query;
+
+  const startOfCurrentMonth = new Date();
+  startOfCurrentMonth.setDate(1);
+  const startOfNextMonth = new Date();
+  startOfNextMonth.setDate(1);
+  startOfNextMonth.setMonth(startOfNextMonth.getMonth() + 1);
+
+  const task = Task;
+
   try {
+    completed = await task.aggregate([
+      {
+        $match: {
+          lastUpdatedOn: {
+            $gte: startOfCurrentMonth,
+            $lte: startOfNextMonth
+          },
+          state: 'Completed'
+        }
+      },
+      {
+        $group: {
+          // _id: {$month: '$createdAt'},
+          _id: null,
+          count: { $sum: 1 }
+        }
+      }
+    ]).exec();
+    if (completed.length === 0) {
+      completed = [{ _id: null, count: 0 }];
+    }
+    //console.log(`Number of Completed Tasks ${JSON.stringify(completed)}`);
+    onGoing = await task.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startOfCurrentMonth,
+            $lte: startOfNextMonth
+          },
+          state: 'Ongoing'
+        }
+      },
+      {
+        $group: {
+          // _id: {$month: '$createdAt'},
+          _id: null,
+          count: { $sum: 1 }
+        }
+      }
+    ]).exec();
+    if (onGoing.length === 0) {
+      onGoing = [{ _id: null, count: 0 }];
+    }
+    //console.log(`Number of Ongoing Tasks ${JSON.stringify(onGoing)}`);
+    overDue = await task.aggregate([
+      {
+        $match: {
+          lastUpdatedOn: {
+            $gte: startOfCurrentMonth,
+            $lte: startOfNextMonth
+          },
+          state: 'Overdue'
+        }
+      },
+      {
+        $group: {
+          // _id: {$month: '$createdAt'},
+          _id: null,
+          count: { $sum: 1 }
+        }
+      }
+    ]).exec();
+    if (overDue.length === 0) {
+      overDue = [{ _id: null, count: 0 }];
+    }
+    //console.log(`Number of Overdue Tasks ${JSON.stringify(overDue)}`);
     tasks = await Task.find({ state: ['Completed', 'Ongoing'] }).populate({ path: 'allocatedTo', select: 'name' });
     //console.log(tasks);
-    count = await Task.countDocuments({ state: 'Completed' });
+    //count = await Task.countDocuments({ state: 'Completed' });
     //console.log(`Number of Task Completed: ${count}`);
-    countU = await Task.countDocuments({ state: 'Ongoing' });
+    //countU = await Task.countDocuments({ state: 'Ongoing' });
     //console.log(`Number of Total Task : ${countU}`);
-    countD = await Task.countDocuments({ state: 'Overdue' });
+    //countD = await Task.countDocuments({ state: 'Overdue' });
     //console.log(`Number of Task OverDue : ${countD}`);
     if (userRole === "user") {
       if (state === "Self") {
@@ -208,7 +283,15 @@ const getAllTasks = async (req, res) => {
   if (!tasks) {
     return res.status(404).json({ message: "No Tasks found" });
   }
-  return res.status(200).json({ tasks, completedTask : count, totalTask : countU, taskOverdue : countD });
+  return res.status(200).json({ 
+    tasks,
+    completedTasks : completed, 
+    onGoingTasks : onGoing,
+    overdueTasks : overDue,
+    // completedTask : count, 
+    // totalTask : countU, 
+    // taskOverdue : countD 
+  });
 };
 
 const getById = async (req, res) => {

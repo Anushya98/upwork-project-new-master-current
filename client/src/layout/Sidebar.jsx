@@ -45,21 +45,24 @@ const Sidebar = () => {
   
 
   return (
-    <div className="sbar" style={{ display: "flex" }}>
+    <div className="sbar" 
+    style={{ display: "flex"  }}>
        
       <Box
         sx={{
           "& .pro-sidebar-inner": {
-            background: `#3d5af1 !important`,
-            borderRadius: "7px !important",
+            background: `#3d5af1 !important`
+            // borderRadius: "7px !important",
           },
           "& .pro-icon-wrapper": {
             backgroundColor: "transparent !important",
           },
           "& .pro-inner-item": {
-            padding: "5px 35px 5px 20px !important",
+            padding: "5px 20px 5px 20px !important",
             color: "#cfcde7",
             fontSize: "10px",
+            borderTopLeftRadius:"40px",
+            borderBottomLeftRadius:"40px",
           },
           "& .pro-inner-item-content": {
             fontSize: "10px",

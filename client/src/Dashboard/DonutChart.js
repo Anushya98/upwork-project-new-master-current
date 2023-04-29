@@ -69,9 +69,9 @@ const Donutchart = () => {
                     offsetY:0
                 }
              },
-             layout:{
-                padding:40
-             },
+            //  layout:{
+            //     padding:40
+            //  },
 
              plotOptions:{
                 pie:{
@@ -94,7 +94,7 @@ const Donutchart = () => {
             enabled:false
          },
          chart:{
-          position:'realtive'
+          position:'center'
          }
   
              
